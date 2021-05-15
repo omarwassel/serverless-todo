@@ -1,5 +1,5 @@
 import middy from '@middy/core'
-import cors from '@middy/cors'
+import cors from '@middy/http-cors'
 import warmup from '@middy/warmup'
 
 import 'source-map-support/register'
@@ -22,7 +22,7 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
   const updatedTodo: UpdateTodoRequest = JSON.parse(event.body)
 
   // TODO: Update a TODO item with the provided id using values in the "updatedTodo" object
-  const item =updateTodo(updatedTodo,todoId)
+  await updateTodo(updatedTodo,todoId)
 
   return {
     statusCode:201,
@@ -30,7 +30,7 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
       'Access-Control-Allow-Origin':'*'
     },
     body:JSON.stringify({
-      item
+    
     })
   }
 

@@ -1,5 +1,5 @@
 import middy from '@middy/core'
-import cors from '@middy/cors'
+import cors from '@middy/http-cors'
 import warmup from '@middy/warmup'
 
 import 'source-map-support/register'

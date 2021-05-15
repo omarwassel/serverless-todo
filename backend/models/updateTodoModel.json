@@ -16,7 +16,7 @@
     },
     "required": [
       "name",
-      "deuDate",
+      "dueDate",
       "done"
     ]
 }

@@ -4,10 +4,10 @@ import * as AWS  from 'aws-sdk'
 
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 
-// import{UpdateTodoRequest}from '../requests/UpdateTodoRequest'
+import{UpdateTodoRequest}from '../requests/UpdateTodoRequest'
 
 import { TodoItem } from '../models/TodoItem'
-import { TodoUpdate } from '../models/TodoUpdate'
+// import { TodoUpdate } from '../models/TodoUpdate'
 
 import {createLogger}from '../utils/logger'
 import {TodoS3Access} from './todoS3Access'
@@ -64,7 +64,7 @@ export class TodoAccess {
     return
   }
 
-  async updateTodoInDynamodb( todoId :String, todoItem: TodoUpdate): Promise<TodoUpdate> {
+  async updateTodoInDynamodb( todoId :String, todoItem: UpdateTodoRequest) {
   
         
     await this.docClient.update({
@@ -78,7 +78,8 @@ export class TodoAccess {
         }
     }).promise()
     logger.info(`Updated the todo with ID ${todoId} successfully`)
-    return todoItem
+    return
+    // return todoItem
 
     
   }

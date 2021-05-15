@@ -1,5 +1,5 @@
 import middy from '@middy/core'
-import cors from '@middy/cors'
+import cors from '@middy/http-cors'
 import warmup from '@middy/warmup'
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
@@ -25,7 +25,7 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
       'Access-Control-Allow-Orign':'*'
     },
     body:JSON.stringify({
-      todos: items
+      items
     })
   }
 })
