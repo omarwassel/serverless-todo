@@ -1,5 +1,6 @@
 import middy from '@middy/core'
-import cors from '@middy/http-cors'
+import cors from '@middy/cors'
+// import { cors } from 'middy/middlewares'
 import warmup from '@middy/warmup'
 
 import 'source-map-support/register'
@@ -22,13 +23,11 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
 
   // TODO: Return a presigned URL to upload a file for a TODO item with the provided id
   const presignedUrl=getPresignedUrl(todoId)
+  loggers.info('presignedUrl:  ',presignedUrl)
   await updateAttachmentUrl(todoId)
   
   return {
     statusCode:200,
-    headers:{
-      'Access-Control-Allow-Origin':'*'
-    },
     body:JSON.stringify({
       uploadUrl:presignedUrl
     })

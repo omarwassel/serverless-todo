@@ -20,7 +20,6 @@ export async function getAllTodos(userId: string): Promise<TodoItem[]> {
 export async function createTodo(CreateTodoRequest: CreateTodoRequest, userId: string): Promise<TodoItem> {
 
   const itemId = uuid.v4()
-  // const s3Bucket:String= new TodoS3Access().getS3BucketName()
   return await todoAccess.createTodoToDynamodb({
     userId: userId,
     todoId: itemId,
@@ -37,17 +36,11 @@ export async function updateAttachmentUrl(todoId: string) {
 }
 
 export async function updateTodo(CreateTodoRequest: UpdateTodoRequest, todoId: string) {
-
-    await todoAccess.updateTodoInDynamodb(todoId,{
-        name: CreateTodoRequest.name,
-        dueDate: CreateTodoRequest.dueDate,
-        done: CreateTodoRequest.done 
-    })
-    return 
+  return await todoAccess.updateTodoInDynamodb(todoId,CreateTodoRequest)
 }
 
 export async function deleteTodo( todoId: string) {
-    await todoAccess.deleteTodoFromDynamodb(todoId)
-    return
+  return await todoAccess.deleteTodoFromDynamodb(todoId)
+    
 }
 

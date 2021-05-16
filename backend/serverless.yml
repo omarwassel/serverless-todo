@@ -42,7 +42,7 @@ provider:
     TODOS_TABLE: Todos-${self:provider.stage}
     TODOS_BY_USER_INDEX: todosByUserIndex
     TODO_S3_BUCKET: todo-attachments-362575539715-${self:provider.stage}
-    SIGNED_URL_EXPIRATION: 300
+    SIGNED_URL_EXPIRATION: 3000
     AUTH0_JWKS_URL: https://coffee-shop-proj.us.auth0.com/.well-known/jwks.json
   
 
@@ -91,6 +91,7 @@ functions:
           method: patch
           path: todos/{todoId}
           authorizer: Auth
+          cors: true
           request:
             schema:
               application/json: ${file(models/updateTodoModel.json)}
@@ -108,6 +109,7 @@ functions:
           method: delete
           path: todos/{todoId}
           authorizer: Auth
+          cors: true
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -122,11 +124,12 @@ functions:
           method: post
           path: todos/{todoId}/attachment
           authorizer: Auth
+          cors: true
     iamRoleStatements:      
       - Effect: Allow
         Action:
           - s3:PutObject
-          - s3:PutObject
+          - s3:GetObject
         Resource: arn:aws:s3:::${self:provider.environment.TODO_S3_BUCKET}/*
       - Effect: Allow
         Action:

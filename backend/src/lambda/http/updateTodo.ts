@@ -1,5 +1,6 @@
 import middy from '@middy/core'
-import cors from '@middy/http-cors'
+import cors from '@middy/cors'
+// import { cors } from 'middy/middlewares'
 import warmup from '@middy/warmup'
 
 import 'source-map-support/register'
@@ -25,13 +26,8 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
   await updateTodo(updatedTodo,todoId)
 
   return {
-    statusCode:201,
-    headers:{
-      'Access-Control-Allow-Origin':'*'
-    },
-    body:JSON.stringify({
-    
-    })
+    statusCode:200,
+    body:JSON.stringify({ })
   }
 
 })

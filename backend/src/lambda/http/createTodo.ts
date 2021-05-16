@@ -1,5 +1,5 @@
 import middy from '@middy/core'
-import cors from '@middy/http-cors'
+import cors from '@middy/cors'
 import warmup from '@middy/warmup'
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
@@ -18,13 +18,13 @@ export const handler =middy( async (event: APIGatewayProxyEvent): Promise<APIGat
   // TODO: Implement creating a new TODO item
   const userId=getUserId(event)
   const req:CreateTodoRequest= JSON.parse(event.body)
-  const item=createTodo(req,userId)
+  const item=await createTodo(req,userId)
 
   
   return {
     statusCode:201,
     body:JSON.stringify({
-      item
+      item,
     })
   }
 })

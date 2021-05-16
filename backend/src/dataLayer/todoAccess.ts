@@ -3,22 +3,19 @@
 import * as AWS  from 'aws-sdk'
 
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
-
 import{UpdateTodoRequest}from '../requests/UpdateTodoRequest'
-
 import { TodoItem } from '../models/TodoItem'
-// import { TodoUpdate } from '../models/TodoUpdate'
-
 import {createLogger}from '../utils/logger'
-import {TodoS3Access} from './todoS3Access'
 
-const todoS3Access=new TodoS3Access();
+
 const logger=createLogger('todo access')
+
 export class TodoAccess {
 
   constructor(
     private readonly docClient: DocumentClient = new AWS.DynamoDB.DocumentClient(),
-    private readonly todoTable = process.env.TODO_TABLE,
+    private readonly attachmentsBucket = process.env.TODO_S3_BUCKET,
+    private readonly todoTable = process.env.TODOS_TABLE,
     private readonly userindex = process.env.TODOS_BY_USER_INDEX) {
   }
 
@@ -56,7 +53,7 @@ export class TodoAccess {
         },
         UpdateExpression: 'set attachmentUrl = :attachmentUrl',
         ExpressionAttributeValues: {
-            ':attachmentUrl': `https://${todoS3Access.getS3BucketName()}.s3.amazonaws.com/${todoId}`
+            ':attachmentUrl': `https://${this.attachmentsBucket}.s3.amazonaws.com/${todoId}`
         }
     }).promise()
 
@@ -66,33 +63,39 @@ export class TodoAccess {
 
   async updateTodoInDynamodb( todoId :String, todoItem: UpdateTodoRequest) {
   
-        
+    logger.info('Updating the todo with ID: ', todoId)
+
+    const { done, dueDate, name } = todoItem
     await this.docClient.update({
-        TableName:this.todoTable,
-        Key:{"todoId": todoId,}, 
-        UpdateExpression: "set name = :name, dueDate=:dueDate, done=:isDone",
-        ExpressionAttributeValues:{
-            ":name":todoItem.name,
-            ":dueDate":todoItem.dueDate,
-            ":isDone":todoItem.done
+        TableName: this.todoTable,
+        Key: {
+            todoId
+        },
+        UpdateExpression: 'set #name = :name, dueDate = :dueDate, done = :done',
+        ExpressionAttributeNames: {
+            "#name": "name"
+        },
+        ExpressionAttributeValues: {
+            ":name": name,
+            ":dueDate": dueDate,
+            ":done": done
         }
     }).promise()
+
     logger.info(`Updated the todo with ID ${todoId} successfully`)
     return
-    // return todoItem
 
-    
   }
 
 
-    async deleteTodoFromDynamodb( todoId :String): Promise<String> {
+    async deleteTodoFromDynamodb( todoId :String) {
         await this.docClient.delete({
             TableName: this.todoTable,
             Key:{
             "todoId":todoId
          }
         }).promise()
-      return todoId 
+      return 
     }
 }
 
