@@ -1,19 +1,18 @@
-
-
 import * as AWS  from 'aws-sdk'
+import * as AWSXRay  from 'aws-xray-sdk'
 
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 import{UpdateTodoRequest}from '../requests/UpdateTodoRequest'
 import { TodoItem } from '../models/TodoItem'
 import {createLogger}from '../utils/logger'
 
-
+const XAWS=AWSXRay.captureAWS(AWS);
 const logger=createLogger('todo access')
 
 export class TodoAccess {
 
   constructor(
-    private readonly docClient: DocumentClient = new AWS.DynamoDB.DocumentClient(),
+    private readonly docClient: DocumentClient = new XAWS.DynamoDB.DocumentClient(),
     private readonly attachmentsBucket = process.env.TODO_S3_BUCKET,
     private readonly todoTable = process.env.TODOS_TABLE,
     private readonly userindex = process.env.TODOS_BY_USER_INDEX) {
